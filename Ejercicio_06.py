@@ -1,62 +1,49 @@
 '''
 /*
- * Crea un programa que simule el comportamiento del sombrero seleccionador del
- * universo mágico de Harry Potter.
- * - De ser posible realizará 5 preguntas (como mínimo) a través de la terminal.
- * - Cada pregunta tendrá 4 respuestas posibles (también a selecciona una a través de terminal).
- * - En función de las respuestas a las 5 preguntas deberás diseñar un algoritmo que
- *   coloque al alumno en una de las 4 casas de Hogwarts (Gryffindor, Slytherin , Hufflepuff y Ravenclaw)
- * - Ten en cuenta los rasgos de cada casa para hacer las preguntas y crear el algoritmo seleccionador.
- *   Por ejemplo, en Slytherin se premia la ambición y la astucia.
+ * Crea un programa que calcule quien gana más partidas al piedra,
+ * papel, tijera, lagarto, spock.
+ * - El resultado puede ser: "Player 1", "Player 2", "Tie" (empate)
+ * - La función recibe un listado que contiene pares, representando cada jugada.
+ * - El par puede contener combinaciones de "🗿" (piedra), "📄" (papel),
+ *   "✂️" (tijera), "🦎" (lagarto) o "🖖" (spock).
+ * - Ejemplo. Entrada: [("🗿","✂️"), ("✂️","🗿"), ("📄","✂️")]. Resultado: "Player 2".
+ * - Debes buscar información sobre cómo se juega con estas 5 posibilidades.
  */
 '''
+from enum import Enum
 
-ansGryffindor = 0
-ansSlytherin = 0
-ansHufflepuff = 0
-ansRavenclaw = 0
+class Moves(Enum):
+    piedra = 0
+    papel = 1
+    tijera = 2
+    lagarto = 3
+    spock = 4
 
-qAndA = [
-    ["¿Que cualidad valoras mas de ti mismo?", "Valentia", "Ambicion", "Lealtad", "Sabiduria"],
-    ["¿Que harias si te encontraras con un animal herido?", "Lo ayudarias valientemente, arriesgando tu seguridad", "Buscarias alguna ventaja para ti, tal vez puedas sacar algo", "Lo cuidarias con dedicacion hasta que se recupere", "Investigarias la mejor manera de tratar al animal"],
-    ["¿Que lugar prefieres en Hogwarts?", "La torre de Gryffindor", "Las mazmorras", "Cualquier lugar de la cocina", "La biblioteca"],
-    ["¿Cual de estos valores es mas importante para ti?", "Coraje", "Poder", "Amistad", "Conocimiento"],
-    ["¿Como reaccionas ante un desafio?", "Lo enfrentas con valentia", "Lo usas para mejorar tu posicion", "Buscas apoyo y trabajas en equipo", "Lo analizas y planeas tu estrategia"]
-]
-
-for i in qAndA:
-    print(i[0] + "\n")
-    numAns = 1
-    for ans in i[1:]:
-        print(f"{numAns} - {ans}")
-        numAns += 1
-    userAns = ""
-    while True:
-        userAns = input("Ingresar respuesta: ")
+def who_wins(game: list):
+    playerOnePoints = 0
+    playerTwoPoints = 0
+    winsTo = [[0, -1, 1, 1, -1],
+              [1, 0, -1, -1, 1],
+              [-1, 1, 0, 1, -1],
+              [-1, 1, -1, 0, 1],
+              [1, -1, 1, -1, 0]]
+    for p1, p2 in game:
         try:
-            userAns = int(userAns)
-            if userAns >= 1 and userAns <= 4:
-                break
-            else:
-                print("Respuesta invalida")
-        except ValueError:
-            print("Respuesta invalida")
-    if userAns== 1:
-        ansGryffindor += 1
-    elif userAns == 2:
-        ansSlytherin += 1
-    elif userAns == 3:
-        ansHufflepuff += 1
-    elif userAns == 4:
-        ansRavenclaw += 1
+            p1, p2 = Moves[p1.lower()].value ,Moves[p2.lower()].value
+        except KeyError:
+            return f"Invalid value {p1}, {p2}"
 
-max = max(ansGryffindor, ansHufflepuff, ansRavenclaw, ansSlytherin)
+        if winsTo[p1][p2] == 1:
+            playerOnePoints += 1
+        elif winsTo[p1][p2]  == -1:
+            playerTwoPoints += 1
 
-if ansSlytherin == max:
-    print("Eres de Slytherin")
-elif ansGryffindor == max:
-    print("Eres de Gryffindor")
-elif ansRavenclaw == max:
-    print("Eres de Ravenclaw")
-else:
-    print("Eres de Hufflepuf")
+    return "Tie" if playerOnePoints == playerTwoPoints else "Player 1" if playerOnePoints > playerTwoPoints else "Player 2"
+
+
+moves = [("piedra","Tijera"), ("tijera","piedra"), ("papel","tijera")]
+print(who_wins(moves))
+moves = [("liedra","Tijera"), ("tijera","piedra"), ("papel","tijera")]
+print(who_wins(moves))
+
+        
