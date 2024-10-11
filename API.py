@@ -26,6 +26,7 @@ else:
 '''
 
 #--------------------------------------------------------------------
+#GET con autenticacion
 # URL de la API
 url = 'https://api.ejemplo.com/data'
 
@@ -43,6 +44,7 @@ if response.status_code == 200:
 else:
     print(f'Error en la solicitud: {response.status_code}')
 #--------------------------------------------------------------------
+#POST
 # URL de la API
 url = 'https://api.ejemplo.com/create'
 
